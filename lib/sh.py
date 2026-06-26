@@ -127,10 +127,38 @@ def time_imp(args):
 
 ## Special commands
 def python_imp(args):
+    
     if len(args) < 2:
         global alive
         alive = False
         return
+
+    script_path = args[1]                    
+    
+    # Extract script name without path and .py
+    if "/" in script_path:
+        script_name = script_path.split("/")[-1]
+    else:
+        script_name = script_path
+    if script_name.endswith(".py"):
+        script_name = script_name[:-3]
+
+    try:
+        mod = __import__(script_name)
+        
+        if hasattr(mod, "__main__"):
+            mod.__main__(args)                    
+        elif hasattr(mod, "run"):
+            mod.run(args[2:] if len(args) > 2 else [])
+            
+    except Exception as e:
+        print(f"Error executing {script_name}:")
+        sys.print_exception(e)
+        
+    finally:
+        # Safe cleanup
+        if script_name in sys.modules:
+            del sys.modules[script_name]
 
     script_name = args[1]
     if script_name.endswith(".py"):
