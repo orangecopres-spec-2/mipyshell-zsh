@@ -127,25 +127,31 @@ def time_imp(args):
 
 ## Special commands
 def python_imp(args):
-    if len(args) == 1:
+    if len(args) < 2:
         global alive
         alive = False
         return
-    
+
     script_name = args[1]
-    if len(script_name.split(".")) > 1:
+    if script_name.endswith(".py"):
         script_name = script_name[:-3]
-    
+
     try:
-        pys = __import__(script_name)
-        if '__main__' in dir(pys):
-            pys.__main__(args)
+        mod = __import__(script_name)
+        
+        if hasattr(mod, "__main__"):
+            mod.__main__(args)           
+        elif hasattr(mod, "run"):
+            mod.run(args[2:] if len(args) > 2 else [])
+            
     except Exception as e:
-        print ("Error executing script {}".format(script_name))
+        print(f"Error executing {script_name}:")
         sys.print_exception(e)
-    
-    # TODO: ovo moze exeptat "KeyError: /bin/pystone" ako je vec deletan; treba stavit if script_name in modules
-    del sys.modules[script_name]
+        
+    finally:
+        # Fixed the TODO - no more KeyError
+        if script_name in sys.modules:
+            del sys.modules[script_name]
 
 def quit_imp(args):
     global alive
