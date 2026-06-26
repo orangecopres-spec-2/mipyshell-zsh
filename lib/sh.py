@@ -1,7 +1,4 @@
-"""
-sh.py - Improved MicroPython Shell for mipyshell
-Rewritten for better compatibility with pacman.py and easier use.
-"""
+
 
 import uos
 import os
