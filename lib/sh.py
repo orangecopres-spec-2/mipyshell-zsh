@@ -172,6 +172,7 @@ cmds_integrated = {
              "reboot": reset_imp,
              "reset": reset_imp,
              "python": python_imp,
+             "pacman": python_imp,
              "time": time_imp,
              "quit": quit_imp}
 
